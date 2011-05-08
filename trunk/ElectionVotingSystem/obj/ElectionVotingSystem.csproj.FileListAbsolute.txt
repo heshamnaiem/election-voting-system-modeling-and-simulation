@@ -1,7 +1,0 @@
-C:\simulation\ElectionVotingSystem\ElectionVotingSystem\bin\Debug\ElectionVotingSystem.exe
-C:\simulation\ElectionVotingSystem\ElectionVotingSystem\bin\Debug\ElectionVotingSystem.pdb
-C:\simulation\ElectionVotingSystem\ElectionVotingSystem\obj\Debug\ResolveAssemblyReference.cache
-C:\simulation\ElectionVotingSystem\ElectionVotingSystem\obj\Debug\ElectionVotingSystem.Properties.Resources.resources
-C:\simulation\ElectionVotingSystem\ElectionVotingSystem\obj\Debug\ElectionVotingSystem.csproj.GenerateResource.Cache
-C:\simulation\ElectionVotingSystem\ElectionVotingSystem\obj\Debug\ElectionVotingSystem.exe
-C:\simulation\ElectionVotingSystem\ElectionVotingSystem\obj\Debug\ElectionVotingSystem.pdb
