@@ -12,11 +12,15 @@ namespace ElectionVotingSystem
         // arrival rate - Poisson distribution
 
         int PrecNumber;
+        long CreationTime;
+
         internal Voter(React.Simulation sim, int number, object PrecNumber)
             : base(sim)
         {
             this.Name = number.ToString();
             this.PrecNumber = (int)PrecNumber;
+            this.CreationTime = this.Now;
+            Console.WriteLine("Creating Voter number {0} for Precinct {1} @ time {2}. ", this.Name, this.PrecNumber, this.CreationTime);
         }
 
         protected override IEnumerator<Task> GetProcessSteps()
@@ -31,6 +35,7 @@ namespace ElectionVotingSystem
             yield return dre;
 
             Console.WriteLine("Voter number {0} Used {1} for Voting in Precinct number {2} at time {3} .", this.Name, dre.Name, this.PrecNumber, this.Now);
+            Console.WriteLine("Voter number {0} is in the system for {1} ", this.Name, this.Now - this.CreationTime);
             yield return DREs.Release(this);
         }
 
