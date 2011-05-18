@@ -5,7 +5,7 @@ using System.Text;
 using React;
 using React.Distribution;
 
-namespace ElectionVotingSystem.Simulation
+namespace ElectionVotingSystem
 {
     class DRE : Process  //direct-recording electronic machine
     {
@@ -34,9 +34,13 @@ namespace ElectionVotingSystem.Simulation
                 return ID;
             }
         }
-        DRE(React.Simulation sim)
+        internal DRE(React.Simulation sim, string name)
             : base(sim)
-        {        }
+        {
+            this.Name = name;
+        }
+
+
 
         // we need more investigation on this
         // Gamma scale parameter = 0.58 ~ 1.05 
