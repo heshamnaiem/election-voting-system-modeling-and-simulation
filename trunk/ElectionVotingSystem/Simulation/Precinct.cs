@@ -27,6 +27,12 @@ namespace ElectionVotingSystem
             //any nescessary code
         }
 
+        public void RemoveDRE()
+        {
+            this.xi--;
+            //any nescessary code
+        }
+
 
         public IEnumerator<Task> Generator(Process p, object data)
         {
