@@ -36,8 +36,8 @@ namespace ElectionVotingSystem
 
         public IEnumerator<Task> Generator(Process p, object data)
         {
-            Console.WriteLine("The Precinct Number {0} is opening for Voters.", data);
-            Resource DREs = CreateDREs();
+            //Console.WriteLine("The Precinct Number {0} is opening for Voters." , data);
+            Resource DREs = CreateDREs(xi);
 
             React.Distribution.Normal n = new Normal(5.0, 1.0);
 
@@ -53,36 +53,40 @@ namespace ElectionVotingSystem
 
                 yield return p.Delay(d);
 
-                Voter voter = new Voter(this, index, data);
-                voter.Activate(null, 0L, DREs);
-                index++;
+                if (Now <= ClosingTime)
+                {
+                    Voter voter = new Voter(this, index, data);
+                    voter.Activate(null, 0L, DREs);
+                    index++;
+                }
             }
             while (Now <= ClosingTime);
 
-
-            if (DREs.BlockCount > 0)
-            {
-                Console.WriteLine("The Precinct Number {0} have to be open for a little bit longer {1}. ", data, DREs.BlockCount);
-            }
-            else
-                Console.WriteLine("The Precinct number {0} is closed.", data);
+            //if (DREs.BlockCount > 0)
+            //{
+            //    Console.WriteLine("The Precinct Number {0} have to be open for a little bit longer {1}. ", data, DREs.BlockCount);
+            //}
+            //else
+            //    Console.WriteLine("The Precinct number {0} is closed.", data);
 
             yield break;
-
-
         }
 
 
-        private Resource CreateDREs()
+
+
+       private Resource CreateDREs(int xi)
         {
             // number of Machines/Precinct
-            DRE[] DREs = new DRE[2];
-            DREs[0] = new DRE(this, "Machine # 1");
-            DREs[1] = new DRE(this, "Machine # 2");
 
+            DRE[] DREs = new DRE[xi];
+            for (int i = 0; i < xi; i++)
+            {
+                DREs[i] = new DRE(this, i + 1);
+            }
             return Resource.Create(DREs);
-
         }
+
     }
 }
 
