@@ -58,12 +58,57 @@ namespace ElectionVotingSystem.GIA
         {
 
             //calculate Z(X) equity using allocation obtained in Phase I
+            float Z_before=calculate_equity();
 
-            //Improve Z(X) Didn't understand 
+         step2:
+
+            int precinct_no1 = get_smallest_precinct_wt();
+            int precinct_no2 = get_neighbor_precinct(precinct_no1);
+
+            ((Precinct)AllPrecincts[precinct_no1]).RemoveDRE();
+            ((Precinct)AllPrecincts[precinct_no2]).AddDRE();
+            
+            //run simulation
+
+            //calculate Z(X) equity using  modified allocation
+            float Z_after = calculate_equity();
+
+                      
+            //Improve Z(X) 
+
+            if (Z_after < Z_before)
+            {
+                Z_before = Z_after;
+                goto step2;
+            }
 
 
 
         }
+
+        public float calculate_equity()
+        {
+            //calculation of equity
+            float x = 3.5F;
+            return x;
+        }
+
+        public int get_smallest_precinct_wt()
+        {
+            //caculation of smallest waiting time precinct no
+            int i = 5;
+            return i;
+
+        }
+
+        public int get_neighbor_precinct(int pno)
+        {
+            //caculation of  neigbhor smallest precinct no
+            int i = 6;
+            return i;
+
+        }
+
 
 
 
