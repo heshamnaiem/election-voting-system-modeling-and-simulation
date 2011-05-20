@@ -26,11 +26,12 @@ namespace ElectionVotingSystem
 
             for (int i = 0; i < c; i++)
             {
-                prec[i] = new Precinct(i+1);
-                t[i] = new Process(prec[0], prec[0].Generator,prec[i].Number);
+                prec[i] = new Precinct(i + 1);
+                t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
             }
 
             prec[0].Run(t);
+            Console.WriteLine("Max Waiting Time is {0} in Precinct number {1}  .", Voter.MaxWaitingTime, Voter.PrecinctNumber);    
         }
     }
 }

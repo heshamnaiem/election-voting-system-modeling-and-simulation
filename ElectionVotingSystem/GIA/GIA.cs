@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using React;
 
-namespace ElectionVotingSystem.GIA
+namespace ElectionVotingSystem
 {
     class GIA
     {
