@@ -4,16 +4,24 @@ using System.Linq;
 using System.Text;
 using React;
 using React.Distribution;
+using React.Monitoring;
 
-namespace ElectionVotingSystem
+
+namespace Testing_Election
 {
     class Precinct : React.Simulation
     {
-
-        private const long ClosingTime = 1 * 60;
-        public int Number;
+        // the time in seconds
+        // and the total voting time is 13 hours
+        private const long ClosingTime = 13 * 60 * 60;
+        private int Number;
 
         private int xi;   //Number of DRE Machines
+
+        public int GetPrecinctNumber()
+        {
+            return Number;
+        }
 
         internal Precinct(int num)
         {
@@ -27,29 +35,49 @@ namespace ElectionVotingSystem
             //any nescessary code
         }
 
-        public void RemoveDRE()
+        // turnout rate can be 0.72 and 0.56
+        double turnOutRate = 0.72;
+        public double TurnOutRate
         {
-            this.xi--;
-            //any nescessary code
+            set { turnOutRate = value; }
+            get { return turnOutRate; }
         }
 
+        int numOfVoters = 10000;
+        public int NumOfVoters
+        {
+            set { numOfVoters = value; }
+            get { return numOfVoters; }
+        }
+
+        double startingTime = 6.5;
+        double[] timeOfTheDay = new double[] { 8, 11, 15, 17, 19.5 };
+        double[] rateAtTimeOfTheDay = new double[] { 0.2061, 0.2734, 0.2405, 0.1326, 0.1387 };
 
         public IEnumerator<Task> Generator(Process p, object data)
         {
             //Console.WriteLine("The Precinct Number {0} is opening for Voters." , data);
             Resource DREs = CreateDREs(xi);
 
-            React.Distribution.Normal n = new Normal(5.0, 1.0);
+            // index specifing the time of the day based on the time of the day table
+            int timeIndex = 0;
+
+
+            //React.Distribution.Normal n = new Normal(5.0, 1.0);
+            double lambda = (rateAtTimeOfTheDay[0] * turnOutRate * numOfVoters) / ((timeOfTheDay[0] - startingTime) * 60 * 60);
+            React.Distribution.Exponential ex = new Exponential(lambda);
+
 
             int index = 1;
             do
             {
                 long d;
-                do
-                {
-                    d = (long)n.NextDouble();
-                }
-                while (d <= 0L);
+                //do
+                //{
+                //d = (long)n.NextDouble();
+                d = (long)ex.NextDouble();
+                //}
+                //while (d <= 0L);
 
                 yield return p.Delay(d);
 
@@ -59,6 +87,16 @@ namespace ElectionVotingSystem
                     voter.Activate(null, 0L, DREs);
                     index++;
                 }
+
+                // assuming time of the day is calculated in seconds
+                if (Now < ClosingTime && (timeOfTheDay[timeIndex] - startingTime) * 60 * 60 < Now)
+                {
+                    // change the index and lambda of the generation of the interarrival times
+                    timeIndex++;
+                    lambda = (rateAtTimeOfTheDay[timeIndex] * turnOutRate * numOfVoters) / ((timeOfTheDay[timeIndex] - timeOfTheDay[timeIndex - 1]) * 60 * 60);
+                    ex.Lambda = lambda;
+                }
+
             }
             while (Now <= ClosingTime);
 
@@ -73,9 +111,7 @@ namespace ElectionVotingSystem
         }
 
 
-
-
-       private Resource CreateDREs(int xi)
+        private Resource CreateDREs(int xi)
         {
             // number of Machines/Precinct
 
@@ -86,7 +122,5 @@ namespace ElectionVotingSystem
             }
             return Resource.Create(DREs);
         }
-
     }
 }
-
