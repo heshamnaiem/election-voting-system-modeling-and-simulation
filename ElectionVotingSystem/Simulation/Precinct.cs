@@ -25,6 +25,9 @@ namespace ElectionVotingSystem
         {
             this.Number = num;
             this.xi = 1;                //initial value
+
+            React.Distribution.Normal n = new Normal(1070, 319);
+            numOfVoters = (int)n.NextDouble();
         }
 
         public void AddDRE()
@@ -34,12 +37,12 @@ namespace ElectionVotingSystem
         }
 
         public void RemoveDRE()
- {
+        {
             this.xi--;
             //any nescessary code
         }
 
-    // turnout rate can be 0.72 and 0.56
+        // turnout rate can be 0.72 and 0.56
         double turnOutRate = 0.72;
         public double TurnOutRate
         {
