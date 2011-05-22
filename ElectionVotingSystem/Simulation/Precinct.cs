@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using React;
 using React.Distribution;
-using React.Monitoring;
 
-
-namespace Testing_Election
+namespace ElectionVotingSystem
 {
     class Precinct : React.Simulation
     {
@@ -35,7 +33,13 @@ namespace Testing_Election
             //any nescessary code
         }
 
-        // turnout rate can be 0.72 and 0.56
+        public void RemoveDRE()
+ {
+            this.xi--;
+            //any nescessary code
+        }
+
+    // turnout rate can be 0.72 and 0.56
         double turnOutRate = 0.72;
         public double TurnOutRate
         {
