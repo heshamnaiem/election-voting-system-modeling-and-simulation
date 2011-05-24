@@ -18,20 +18,8 @@ namespace ElectionVotingSystem
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
 
-            // number of Precinct
-            const int c = 4;
-
-            Precinct[] prec = new Precinct[c];
-            Task[] t = new Task[c];
-
-            for (int i = 0; i < c; i++)
-            {
-                prec[i] = new Precinct(i + 1);
-                t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
-            }
-
-            prec[0].Run(t);
-            Console.WriteLine("Max Waiting Time is {0} in Precinct number {1}  .", Voter.MaxWaitingTime, Voter.PrecinctNumber);    
+           
+                
         }
     }
 }

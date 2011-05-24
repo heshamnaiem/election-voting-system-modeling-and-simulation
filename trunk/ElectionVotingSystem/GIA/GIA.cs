@@ -13,7 +13,10 @@ namespace ElectionVotingSystem
         int Precinct_No;        //Number Of Precincts
         int DRE_No;        //Number Of DRE Machines
         //  Precinct[] AllPrecincts;  //Array of all Precincts
-        ArrayList AllPrecincts;
+        //ArrayList AllPrecincts;
+        Precinct[] prec;
+        Task[] t;
+
 
         public GIA(int precinct_no, int dre_no)
         {
@@ -21,16 +24,23 @@ namespace ElectionVotingSystem
             this.Counter = 0;
             this.Precinct_No = precinct_no;
             this.DRE_No = dre_no;
+
+            this.prec = new Precinct[precinct_no];
+            this.t = new Task[precinct_no];
+
         }
 
         public void Phase_I()
         {
+            
+
             //  Step 1. Assign initial values to xi for each precinct i (usually we set xi = 1 for all i). 
             //  Set Counter = Sum of xi
 
-            for (int i = 1; i <= this.Precinct_No; i++)
+            for (int i = 0; i < this.Precinct_No; i++)
             {
-                AllPrecincts.Add(new Precinct(i));
+                this.prec[i] = new Precinct(i + 1);
+                this.t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
                 this.Counter++;
             }
 
@@ -38,19 +48,21 @@ namespace ElectionVotingSystem
             {
                 //  Step 2. Let xi = xi+1 for the precinct i with the largest estimated expected waiting time in queue, Wi(xi).
 
-                //Here run simulation and get largest estimated expected waiting time in queue  
+                //Here run simulation and get largest estimated expected waiting time in queue 
 
-                int Large_PrecinctNo = 5;
-                ((Precinct)AllPrecincts[Large_PrecinctNo]).AddDRE();
+                prec[0].Run(t);
+               // Console.WriteLine("Max Waiting Time is {0} in Precinct number {1}  .", Voter.MaxWaitingTime, Voter.PrecinctNumber);
 
+
+                int Large_PrecinctNo = Voter.PrecinctNumber-1;
+                prec[Large_PrecinctNo].AddDRE();
+
+                
                 //Step 3. Counter = Counter + 1.
                 this.Counter++;
 
-
                 //Step 4. If Counter = N, stop. Otherwise, go to step 2.
-
             }
-
 
         }
 
@@ -65,8 +77,8 @@ namespace ElectionVotingSystem
             int precinct_no1 = get_smallest_precinct_wt();
             int precinct_no2 = get_neighbor_precinct(precinct_no1);
 
-            ((Precinct)AllPrecincts[precinct_no1]).RemoveDRE();
-            ((Precinct)AllPrecincts[precinct_no2]).AddDRE();
+            prec[precinct_no1].RemoveDRE();
+            prec[precinct_no2].AddDRE();
             
             //run simulation
 
