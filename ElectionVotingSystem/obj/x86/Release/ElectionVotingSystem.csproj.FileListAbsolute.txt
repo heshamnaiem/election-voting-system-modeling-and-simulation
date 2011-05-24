@@ -18,3 +18,11 @@ F:\Private\ElectionVotingSystem\bin\Release\ElectionVotingSystem.pdb
 F:\Private\ElectionVotingSystem\bin\Release\React.NET.dll
 C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\ElectionVotingSystem.exe
 C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\ElectionVotingSystem.pdb
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\bin\Release\ElectionVotingSystem.exe
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\bin\Release\ElectionVotingSystem.pdb
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\bin\Release\React.NET.dll
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\ResolveAssemblyReference.cache
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\ElectionVotingSystem.Form1.resources
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\ElectionVotingSystem.Properties.Resources.resources
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\GenerateResource.read.1.tlog
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\GenerateResource.write.1.tlog
