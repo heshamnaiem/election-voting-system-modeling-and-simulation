@@ -16,3 +16,5 @@ F:\Private\ElectionVotingSystem\obj\x86\Release\GenerateResource.write.1.tlog
 F:\Private\ElectionVotingSystem\bin\Release\ElectionVotingSystem.exe
 F:\Private\ElectionVotingSystem\bin\Release\ElectionVotingSystem.pdb
 F:\Private\ElectionVotingSystem\bin\Release\React.NET.dll
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\ElectionVotingSystem.exe
+C:\election-voting-system-modeling-and-simulation\ElectionVotingSystem\obj\x86\Release\ElectionVotingSystem.pdb
