@@ -21,10 +21,10 @@ namespace ElectionVotingSystem
             return Number;
         }
 
-        internal Precinct(int num)
+        internal Precinct(int num, int dre_no)
         {
             this.Number = num;
-            this.xi = 1;                //initial value
+            this.xi = dre_no;                //initial value
 
             React.Distribution.Normal n = new Normal(1070, 319);
             numOfVoters = (int)n.NextDouble();
