@@ -15,8 +15,8 @@ namespace ElectionVotingSystem
         long CreationTime;
         long ActivationTime;
         long WaitingTime;
-        internal static long MaxWaitingTime = -1;
-        internal static int PrecinctNumber = -1; // with the Max Waiting Time 
+        public static long MaxWaitingTime = -1;
+        public static int PrecinctNumber = -1; // with the Max Waiting Time
 
         static public long GetMaxWaitingTimeVariable()
         {

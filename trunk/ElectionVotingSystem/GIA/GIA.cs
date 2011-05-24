@@ -16,7 +16,6 @@ namespace ElectionVotingSystem
         //ArrayList AllPrecincts;
         Precinct[] prec;
         Task[] t;
-        int[] P_D_N;
 
 
         public GIA(int precinct_no, int dre_no)
@@ -28,7 +27,6 @@ namespace ElectionVotingSystem
 
             this.prec = new Precinct[precinct_no];
             this.t = new Task[precinct_no];
-            this.P_D_N = new int[precinct_no];
 
         }
 
@@ -41,22 +39,20 @@ namespace ElectionVotingSystem
 
             for (int i = 0; i < this.Precinct_No; i++)
             {
-              //  this.prec[i] = new Precinct(i + 1);
-              //  this.t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
+                this.prec[i] = new Precinct(i + 1);
+                this.t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
                 this.Counter++;
-                this.P_D_N[i] = 1;
-
             }
 
             while (this.Counter < this.DRE_No)
             {
+                Voter.MaxWaitingTime = -1;
+                Voter.PrecinctNumber = -1;
                 //  Step 2. Let xi = xi+1 for the precinct i with the largest estimated expected waiting time in queue, Wi(xi).
 
                 for (int i = 0; i < this.Precinct_No; i++)
                 {
-                    this.prec[i] = new Precinct(i + 1,P_D_N[i]);
                     this.t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
-                    
                 }
 
                 //Here run simulation and get largest estimated expected waiting time in queue 
@@ -66,9 +62,7 @@ namespace ElectionVotingSystem
 
 
                 int Large_PrecinctNo = Voter.PrecinctNumber-1;
-               // prec[Large_PrecinctNo].AddDRE();
-                P_D_N[Large_PrecinctNo]++;
-
+                prec[Large_PrecinctNo].AddDRE();
 
                 
                 //Step 3. Counter = Counter + 1.
