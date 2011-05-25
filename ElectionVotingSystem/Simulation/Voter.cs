@@ -18,6 +18,15 @@ namespace ElectionVotingSystem
         public static long MaxWaitingTime = -1;
         public static int PrecinctNumber = -1; // with the Max Waiting Time
 
+        public static int totalPrecNum = 50;    /////////////////////// 
+        public static long[] M_W_T_P = new long[totalPrecNum];   // Max Waiting Time in each Precinct
+
+        static public void ResetM_W_T_P()
+        {
+            for (int i = 0; i < totalPrecNum; i++)
+                M_W_T_P[i] = -1;
+        }
+
         static public long GetMaxWaitingTimeVariable()
         {
             return MaxWaitingTime;
@@ -59,6 +68,10 @@ namespace ElectionVotingSystem
 
         protected void CalculateMaxWitingTime(long waitingtime)
         {
+            if (M_W_T_P[this.PrecNumber - 1] < waitingtime)
+            {
+                M_W_T_P[this.PrecNumber - 1] = waitingtime;
+            }
             if (MaxWaitingTime < waitingtime)
             {
                 MaxWaitingTime = waitingtime;
