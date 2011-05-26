@@ -14,7 +14,13 @@ namespace ElectionVotingSystem
         private const long ClosingTime = 13 * 60 * 60;
         private int Number;
 
-        private int xi;   //Number of DRE Machines
+        //Number of DRE Machines
+        private int xi;  
+        public int Xi
+        {
+            set { xi = value; }
+            get { return xi; }
+        }
 
         public int GetPrecinctNumber()
         {
