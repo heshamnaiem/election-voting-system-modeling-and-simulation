@@ -11,15 +11,17 @@ namespace ElectionVotingSystem
     {
         //number of machines
 
-        internal DRE(React.Simulation sim, int number)
+        // Gamma scale parameter = 0.58 ~ 1.05 
+        // Gamma Shape parameter = 5.71
+        Gamma gamma;
+
+        internal DRE(React.Simulation sim, int number, double g_scale)
             : base(sim)
         {
             this.Name = number.ToString();
+            this.gamma=new Gamma(g_scale, 5.71);
         }
-
-        // Gamma scale parameter = 0.58 ~ 1.05 
-        // Gamma Shape parameter = 5.71
-        Gamma gamma = new Gamma(1.05, 5.71);
+        
 
         protected override IEnumerator<Task> GetProcessSteps()
         {
