@@ -11,19 +11,25 @@ namespace ElectionVotingSystem
     {
         int Counter;
         int Precinct_No;        //Number Of Precincts
-        int DRE_No;        //Number Of DRE Machines
-        //  Precinct[] AllPrecincts;  //Array of all Precincts
-        //ArrayList AllPrecincts;
+        int DRE_No;        //Number Of DRE Machines        
         Precinct[] prec;
         Task[] t;
+        double turnOutRate;
+        double gammaScale;
+        double equity;
 
 
-        public GIA(int precinct_no, int dre_no)
+
+
+
+        public GIA(int precinct_no, int dre_no, double to_rate, double gScale)
         {
-            // this.AllPrecincts = new Precinct[precinct_no];
             this.Counter = 0;
             this.Precinct_No = precinct_no;
             this.DRE_No = dre_no;
+
+            this.turnOutRate = to_rate;
+            this.gammaScale = gScale;
 
             this.prec = new Precinct[precinct_no];
             this.t = new Task[precinct_no];
@@ -39,13 +45,14 @@ namespace ElectionVotingSystem
 
             for (int i = 0; i < this.Precinct_No; i++)
             {
-                this.prec[i] = new Precinct(i + 1);
+                this.prec[i] = new Precinct(i + 1,this.turnOutRate,this.gammaScale);
                 this.t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
                 this.Counter++;
             }
 
             while (this.Counter < this.DRE_No)
             {
+                Voter.ResetM_W_T_P();
                 Voter.MaxWaitingTime = -1;
                 Voter.PrecinctNumber = -1;
                 //  Step 2. Let xi = xi+1 for the precinct i with the largest estimated expected waiting time in queue, Wi(xi).
@@ -71,62 +78,121 @@ namespace ElectionVotingSystem
                 //Step 4. If Counter = N, stop. Otherwise, go to step 2.
             }
 
+            for (int i = 0; i < this.Precinct_No; i++)
+            {
+                this.t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
+            }
+            prec[0].Run(t);
+
+         //   this.equity = calculate_equity();
+
+
         }
 
         public void Phase_II()
         {
-
-            //calculate Z(X) equity using allocation obtained in Phase I
-            float Z_before=calculate_equity();
-
-         step2:
-
-            int precinct_no1 = get_smallest_precinct_wt();
-            int precinct_no2 = get_neighbor_precinct(precinct_no1);
-
-            prec[precinct_no1].RemoveDRE();
-            prec[precinct_no2].AddDRE();
-            
-            //run simulation
-
-            //calculate Z(X) equity using  modified allocation
-            float Z_after = calculate_equity();
-
-                      
-            //Improve Z(X) 
-
-            if (Z_after < Z_before)
+            bool definecase;
+            for (int i = 0; i < (this.Precinct_No-1); i++)
             {
-                Z_before = Z_after;
-                goto step2;
+                    //calculate Z(X) before
+                    double Z_before = this.calculate_equity();
+
+                    if (Voter.M_W_T_P[i] < Voter.M_W_T_P[i+1])
+                    {
+                        prec[i+1].AddDRE();
+                        prec[i].RemoveDRE();
+                        definecase = true;
+                    }
+                    else
+                    {
+                        prec[i].AddDRE();
+                        prec[i+1].RemoveDRE();
+                        definecase = false;
+                    }
+
+                    Voter.ResetM_W_T_P();
+                    Voter.MaxWaitingTime = -1;
+                    Voter.PrecinctNumber = -1;
+                    //  Step 2. Let xi = xi+1 for the precinct i with the largest estimated expected waiting time in queue, Wi(xi).
+
+                    for (int k = 0; k < this.Precinct_No; k++)
+                    {
+                        this.t[k] = new Process(prec[0], prec[0].Generator, prec[k].GetPrecinctNumber());
+                    }
+
+                    //Here run simulation and get largest estimated expected waiting time in queue 
+
+                    prec[0].Run(t);
+
+                    //calculate Z(X) after
+                    double Z_after = this.calculate_equity();
+
+                    //Improve Z(X) 
+
+                    if (Z_after > Z_before)
+                    {
+                        //return to previous
+                        if (definecase)
+                        {
+                            prec[i+1].RemoveDRE();
+                            prec[i].AddDRE();
+
+                        }
+                        else
+                        {
+                            prec[i].RemoveDRE();
+                            prec[i+1].AddDRE();
+
+                        }
+
+                        //run simulation again
+
+                        Voter.ResetM_W_T_P();
+                        Voter.MaxWaitingTime = -1;
+                        Voter.PrecinctNumber = -1;
+                        //  Step 2. Let xi = xi+1 for the precinct i with the largest estimated expected waiting time in queue, Wi(xi).
+
+                        for (int k = 0; k < this.Precinct_No; k++)
+                        {
+                            this.t[k] = new Process(prec[0], prec[0].Generator, prec[k].GetPrecinctNumber());
+                        }
+
+                        //Here run simulation and get largest estimated expected waiting time in queue 
+
+                        prec[0].Run(t);
+
+
+                    }                 
+                                       
+               
+
             }
 
+            
+
 
 
         }
 
-        public float calculate_equity()
+        public double calculate_equity()
         {
+            long sum=0;
             //calculation of equity
-            float x = 3.5F;
-            return x;
-        }
+            for (int i = 0; i < this.Precinct_No; i++)
+            {
+                for (int j = i+1; j < this.Precinct_No; j++)
+                {
+                    sum = sum + Math.Abs(Voter.M_W_T_P[i]- Voter.M_W_T_P[j]);
+                }
 
-        public int get_smallest_precinct_wt()
-        {
-            //caculation of smallest waiting time precinct no
-            int i = 5;
-            return i;
+            }
 
-        }
+            double numtodivide = (this.Precinct_No) * (this.Precinct_No - 1) / 2;
 
-        public int get_neighbor_precinct(int pno)
-        {
-            //caculation of  neigbhor smallest precinct no
-            int i = 6;
-            return i;
+            double eq = sum / numtodivide;
 
-        }
+            return eq;
+        }     
 
 
 
