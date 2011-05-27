@@ -14,6 +14,9 @@ namespace ElectionVotingSystem
         private const long ClosingTime = 13 * 60 * 60;
         private int Number;
 
+        double gamma_scale_parameter;
+
+
         //Number of DRE Machines
         private int xi;  
         public int Xi
@@ -27,10 +30,13 @@ namespace ElectionVotingSystem
             return Number;
         }
 
-        internal Precinct(int num)
+        internal Precinct(int num, double to_rate, double gScale)
         {
             this.Number = num;
             this.xi = 1;                //initial value
+            this.turnOutRate = to_rate;
+            this.gamma_scale_parameter = gScale;
+
 
             React.Distribution.Normal n = new Normal(1070, 319);
             numOfVoters = (int)n.NextDouble();
@@ -49,7 +55,7 @@ namespace ElectionVotingSystem
         }
 
         // turnout rate can be 0.72 and 0.56
-        double turnOutRate = 0.72;
+        double turnOutRate;
         public double TurnOutRate
         {
             set { turnOutRate = value; }
@@ -131,7 +137,7 @@ namespace ElectionVotingSystem
             DRE[] DREs = new DRE[xi];
             for (int i = 0; i < xi; i++)
             {
-                DREs[i] = new DRE(this, i + 1);
+                DREs[i] = new DRE(this, i + 1,gamma_scale_parameter);
             }
             return Resource.Create(DREs);
         }
