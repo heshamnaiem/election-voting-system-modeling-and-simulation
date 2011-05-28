@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using React;
+using React.Distribution;
 
 namespace ElectionVotingSystem
 {
@@ -18,7 +19,7 @@ namespace ElectionVotingSystem
         double gammaScale;
         double equity;
 
-
+        Weibull weibull;
 
 
 
@@ -34,6 +35,8 @@ namespace ElectionVotingSystem
             this.prec = new Precinct[precinct_no];
             this.t = new Task[precinct_no];
 
+            weibull = new Weibull(60.884, 6.9514);
+
         }
 
         public void Phase_I()
@@ -45,7 +48,8 @@ namespace ElectionVotingSystem
 
             for (int i = 0; i < this.Precinct_No; i++)
             {
-                this.prec[i] = new Precinct(i + 1,this.turnOutRate,this.gammaScale);
+                long to_fit = (long)(weibull.NextDouble());
+                this.prec[i] = new Precinct(i + 1, to_fit, this.gammaScale);
                 this.t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
                 this.Counter++;
             }
@@ -190,6 +194,8 @@ namespace ElectionVotingSystem
             double numtodivide = (this.Precinct_No) * (this.Precinct_No - 1) / 2;
 
             double eq = sum / numtodivide;
+
+            eq = eq / 60;
 
             return eq;
         }     
