@@ -26,7 +26,7 @@ namespace ElectionVotingSystem
         protected override IEnumerator<Task> GetProcessSteps()
         {
             // get delay in Milliseconds
-            long  delay = (long)(gamma.NextDouble()); // * 60 * 1000);
+            long  delay = (long)(gamma.NextDouble() * 60); // * 60 * 1000);
             //Console.WriteLine("Delay = {0} ", delay);
             // starting delay
             yield return Delay(delay);
