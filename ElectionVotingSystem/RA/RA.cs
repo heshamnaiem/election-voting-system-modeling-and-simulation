@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using React;
+using React.Distribution;
 
 namespace ElectionVotingSystem
 {
@@ -22,7 +23,8 @@ namespace ElectionVotingSystem
 
         Precinct[] prec;
         Task[] t;
-       
+
+        Weibull weibull;
 
         public RA(int precinct_no, int dre_no, double to_rate, double gScale)
         {
@@ -40,6 +42,9 @@ namespace ElectionVotingSystem
 
             this.prec = new Precinct[precinct_no];
             this.t = new Task[precinct_no];
+
+
+            weibull = new Weibull(60.884, 6.9514);
         }
 
         public void RandomAlgo()
@@ -47,7 +52,8 @@ namespace ElectionVotingSystem
             long temp = 2147483647; // the min MaxWaitingTime
             for (int i = 0; i < this.Precinct_No; i++)
             {
-                this.prec[i] = new Precinct(i + 1, this.turnOutRate, this.gammaScale);
+                long to_fit = (long)(weibull.NextDouble());
+                this.prec[i] = new Precinct(i + 1, to_fit, gammaScale);
             }
 
             for (int j = 0; j < it; j++)

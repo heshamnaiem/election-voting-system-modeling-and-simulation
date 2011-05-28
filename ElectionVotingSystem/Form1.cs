@@ -70,5 +70,38 @@ namespace ElectionVotingSystem
             double std_equity = Math.Sqrt(sum / sample_size);
          
         }
+
+        private void RandomAlgo_Click(object sender, EventArgs e)
+        {
+            //sample size
+            int sample_size = 100;
+
+            // number of Precinct
+            const int p = 20;
+            Voter.totalPrecNum = 20;
+
+            // number of DRE
+            const int d = 72;
+
+            //turnout rate (not used now)
+            double to = 0.56;
+
+            //gamma scale parameter
+            double gs = 0.583;
+
+            double[] RA_equity_array = new double[sample_size];
+
+            for (int i = 0; i < sample_size; i++)
+            {
+                RA RA_Obj = new RA(p, d, to, gs);
+                RA_Obj.RandomAlgo();
+                RA_equity_array[i] = RA_Obj.calculate_equity();       
+                RA_Obj.Reset();
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\simulation\Random_Equity.txt", true))
+                {
+                    file.WriteLine(RA_equity_array[i].ToString());
+                }
+            }
+        }
     }
 }
