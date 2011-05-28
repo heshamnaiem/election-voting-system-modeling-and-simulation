@@ -74,7 +74,7 @@ namespace ElectionVotingSystem
         private void RandomAlgo_Click(object sender, EventArgs e)
         {
             //sample size
-            int sample_size = 100;
+            int sample_size = 1;
 
             // number of Precinct
             const int p = 20;

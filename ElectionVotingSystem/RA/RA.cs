@@ -64,9 +64,10 @@ namespace ElectionVotingSystem
                 Voter.ResetM_W_T_P();
                 int count = 0;
 
+    
                 for (int i = 0; i < this.Precinct_No; i++)
                 {
-                    if (count < DRE_No)
+                    if (count < DRE_No - Precinct_No/2)
                     {
                         if (i == Precinct_No - 1)
                         {
@@ -76,7 +77,12 @@ namespace ElectionVotingSystem
                             }
                         }
                         else
-                            prec[i].Xi = rand.Next(1, this.DRE_No / 2);
+                        {
+                            int test = prec[i].Xi;
+                            prec[i].Xi = rand.Next(1, (DRE_No - Precinct_No) / 4);
+                            if ((prec[i].Xi + count) > (DRE_No - Precinct_No/2))
+                                prec[i].Xi = test;
+                        }
                     }
                     save[j, prec[i].GetPrecinctNumber()] = prec[i].Xi;
                     count += prec[i].Xi;
