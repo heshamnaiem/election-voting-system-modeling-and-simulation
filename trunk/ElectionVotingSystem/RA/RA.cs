@@ -30,7 +30,7 @@ namespace ElectionVotingSystem
         {
             this.Precinct_No = precinct_no;
             this.DRE_No = dre_no;
-            this.it = 4;
+            this.it = 1;
             this.row = -1;
 
             this.save = new int[it, Precinct_No + 1];
@@ -52,8 +52,9 @@ namespace ElectionVotingSystem
             long temp = 2147483647; // the min MaxWaitingTime
             for (int i = 0; i < this.Precinct_No; i++)
             {
-                long to_fit = (long)(weibull.NextDouble());
-                this.prec[i] = new Precinct(i + 1, to_fit, gammaScale);
+                long to_fit = ((long)(weibull.NextDouble()));
+                double to_fit_rate = (double)(to_fit) / 100;
+                this.prec[i] = new Precinct(i + 1, to_fit_rate, gammaScale);
             }
 
             for (int j = 0; j < it; j++)
@@ -127,6 +128,8 @@ namespace ElectionVotingSystem
             double numtodivide = (this.Precinct_No) * (this.Precinct_No - 1) / 2;
 
             double eq = sum / numtodivide;
+
+            eq = eq / 60;
 
             return eq;
         }
