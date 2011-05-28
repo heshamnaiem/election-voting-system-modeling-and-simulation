@@ -44,7 +44,11 @@ namespace ElectionVotingSystem
 
         public void RandomAlgo()
         {
-            long temp = 2147483647;
+            long temp = 2147483647; // the min MaxWaitingTime
+            for (int i = 0; i < this.Precinct_No; i++)
+            {
+                this.prec[i] = new Precinct(i + 1, this.turnOutRate, this.gammaScale);
+            }
 
             for (int j = 0; j < it; j++)
             {
@@ -56,7 +60,6 @@ namespace ElectionVotingSystem
 
                 for (int i = 0; i < this.Precinct_No; i++)
                 {
-                    this.prec[i] = new Precinct(i + 1, this.turnOutRate, this.gammaScale);
                     if (count < DRE_No)
                     {
                         if (i == Precinct_No - 1)
@@ -71,39 +74,29 @@ namespace ElectionVotingSystem
                     }
                     save[j, prec[i].GetPrecinctNumber()] = prec[i].Xi;
                     count += prec[i].Xi;
-                    //Console.WriteLine("Precinct number {0}  has {1} DRE. ", prec[i].GetPrecinctNumber(), prec[i].Xi);
                     this.t[i] = new Process(prec[0], prec[0].Generator, prec[i].GetPrecinctNumber());
                 }
 
                 prec[0].Run(t);
 
                 save[j, 0] = (int)Voter.MaxWaitingTime;
-                Console.WriteLine("Max Waiting Time is {0} in Precinct number {1}  .", Voter.MaxWaitingTime, Voter.PrecinctNumber);
                 for (int i = 0; i < Precinct_No; i++)
                 {
                     BestM_W_T_P[j, i] = Voter.M_W_T_P[i];
-                    Console.WriteLine("Max Waiting Time is {0} in Precinct number {1}  .", BestM_W_T_P[j, i], i + 1);
                 }
             }
 
             for (int j = 0; j < it; j++)
             {
-                for (int i = 0; i < this.Precinct_No + 1; i++)
-                {
-                    Console.WriteLine("Save Number {0} has combs {1} ", j + 1, save[j, i]);
-                }
                 if (temp > save[j, 0])
                 {
                     temp = save[j, 0];  // temp contain the min value for the max waiting Time 
                     row = j;                //the number of row that contain the Best combination
                 }
             }
-            Console.WriteLine("row =  {0} ", row);
             for (int i = 0; i < Precinct_No; i++)
             {
                 Best[i] = save[row, i + 1];
-                Console.WriteLine("Best RA is {0} ", Best[i]);
-                Console.WriteLine("Best Time is {0} ", BestM_W_T_P[row, i]);
             }
         }
 
@@ -138,6 +131,7 @@ namespace ElectionVotingSystem
                 }
             }
         }
+
 
     }
 }
