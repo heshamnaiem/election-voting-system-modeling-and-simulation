@@ -13,10 +13,11 @@ namespace ElectionVotingSystem
         int DRE_No;        //Number Of DRE Machines
         int it;
         int row;
+        bool flag;
 
-        int[,] save;
-        int[] Best;
-        long[,] BestM_W_T_P;
+        int[,] save;    // to save all the combinations
+        int[] Best;     // contain the Best combination
+        long[,] BestM_W_T_P;    //contain the Best M_W_T_P [iteration, precincts] // row iteration is the Best
 
         double turnOutRate;
         double gammaScale;
@@ -30,8 +31,9 @@ namespace ElectionVotingSystem
         {
             this.Precinct_No = precinct_no;
             this.DRE_No = dre_no;
-            this.it = 1;
+            this.it = 4;
             this.row = -1;
+            this.flag = false;
 
             this.save = new int[it, Precinct_No + 1];
             this.Best = new int[Precinct_No];
@@ -49,7 +51,6 @@ namespace ElectionVotingSystem
 
         public void RandomAlgo()
         {
-            long temp = 2147483647; // the min MaxWaitingTime
             for (int i = 0; i < this.Precinct_No; i++)
             {
                 long to_fit = ((long)(weibull.NextDouble()));
@@ -99,6 +100,13 @@ namespace ElectionVotingSystem
                 }
             }
 
+            Calculations();
+        }
+
+        public void Calculations()
+        {
+            long temp = 2147483647; // the min MaxWaitingTime
+
             for (int j = 0; j < it; j++)
             {
                 if (temp > save[j, 0])
@@ -113,6 +121,99 @@ namespace ElectionVotingSystem
             }
         }
 
+        public void RA_Phase_II()
+        {
+ 
+            double eq_before = 0;
+            double eq_after = 0;
+            int minIndex = 0;
+            int maxIndex = 0;
+
+            // set the prec.x with the Best combination
+            for (int i = 1; i < Precinct_No; i++)
+            {
+                prec[i].Xi = Best[i];
+                Voter.M_W_T_P[i] = BestM_W_T_P[row, i];
+            }
+
+            do
+            {
+                // Get the min and max of the Best MWTP 
+                long min = Voter.M_W_T_P[0];
+                minIndex = 0;
+                long max = Voter.M_W_T_P[0];
+                maxIndex = 0;
+
+                for (int i = 1; i < Precinct_No; i++)
+                {
+                    if (min > Voter.M_W_T_P[i])
+                    {
+                        min = Voter.M_W_T_P[i];
+                        minIndex = i;
+                    }
+                    if (max < Voter.M_W_T_P[i])
+                    {
+                        max = Voter.M_W_T_P[i];
+                        maxIndex = i;
+                    }
+                }
+
+                // calculate equity using M_W_T_P
+                flag = true;
+                eq_before = calculate_equity();
+
+                prec[minIndex].RemoveDRE();
+                prec[maxIndex].AddDRE();
+
+                Voter.ResetM_W_T_P();
+                Voter.MaxWaitingTime = -1;
+                Voter.PrecinctNumber = -1;
+
+                for (int k = 0; k < this.Precinct_No; k++)
+                {
+                    this.t[k] = new Process(prec[0], prec[0].Generator, prec[k].GetPrecinctNumber());
+                }
+
+                prec[0].Run(t);
+                // calculate equity using M_W_T_P
+                flag = true;
+                eq_after = calculate_equity();
+
+            } while (eq_after < eq_before);
+
+            prec[minIndex].AddDRE();
+            prec[maxIndex].RemoveDRE();
+
+            Voter.ResetM_W_T_P();
+            Voter.MaxWaitingTime = -1;
+            Voter.PrecinctNumber = -1;
+
+            for (int k = 0; k < this.Precinct_No; k++)
+            {
+                this.t[k] = new Process(prec[0], prec[0].Generator, prec[k].GetPrecinctNumber());
+            }
+
+            prec[0].Run(t);
+            // calculate equity using M_W_T_P
+            flag = true;
+            eq_after = calculate_equity();
+
+
+            save[row, 0] = (int)Voter.MaxWaitingTime;
+            for (int i = 0; i < Precinct_No; i++)
+            {
+                BestM_W_T_P[row, i] = Voter.M_W_T_P[i];
+                Best[i] = prec[i].Xi;
+                save[row, i] = prec[i].Xi;
+            }
+
+            flag = false;
+            eq_after = calculate_equity();
+        }
+
+
+
+
         public double calculate_equity()
         {
             long sum = 0;
@@ -121,7 +222,15 @@ namespace ElectionVotingSystem
             {
                 for (int j = i + 1; j < this.Precinct_No; j++)
                 {
-                    sum = sum + Math.Abs(BestM_W_T_P[row, i] - BestM_W_T_P[row, j]);
+                    switch (flag)
+                    {
+                        case (false):
+                            sum = sum + Math.Abs(BestM_W_T_P[row, i] - BestM_W_T_P[row, j]);
+                            break;
+                        case (true):
+                            sum = sum + Math.Abs(Voter.M_W_T_P[i] - Voter.M_W_T_P[j]);
+                            break;
+                    }
                 }
             }
 
